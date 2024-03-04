@@ -1,5 +1,5 @@
-  import streamlit as st
-  import genai  # Assuming you have installed the genai library
+import streamlit as st
+import genai  # Assuming you have installed the genai library
 
   # Safety settings (optional)
   safety_settings = {
