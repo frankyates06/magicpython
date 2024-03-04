@@ -1,37 +1,33 @@
 import streamlit as st
-import genai  # Assuming you have installed the genai library
+import os
+import google.generativeai as genai
 
-  # Safety settings (optional)
-  safety_settings = {
-      "profanity_filter": True,  # Adjust settings as needed
-      "hate_speech_filter": True
-  }
+# Set your API key
+GOOGLE_API_KEY = os.getenv("GAPI")
 
-  def analyze_and_respond(image, question):
-      """Analyzes the image using Gemini Vision and responds to the question."""
+# Configure the SDK with your API key
+genai.configure(api_key=GOOGLE_API_KEY)
 
-      try:
-          model = genai.GenerativeModel('gemini-pro-vision', safety_settings=safety_settings)
-          response = model.generate_content(["Observe the image and reply that your magic power will enable you to guess what's in the user's mind, thanks to a very particular detail visible in the photo.", image], stream=True)
-          response.resolve()
+def ask_animal_poem(animal_name):
+    # Initialize the model for a chat
+    chat = genai.GenerativeModel('gemini-pro').start_chat()
 
-          for candidate in response.candidates:
-              answer = part.text for part in candidate.content.parts
-              st.write(answer)
-              break  # Display only the first response
+    # Sending the animal name to start the conversation
+    response = chat.send_message(animal_name)
 
-      except Exception as e:
-          st.error(f"An error occurred: {e}")
+    # Generating a poem based on the animal name
+    poem_response = chat.send_message("en quatre  lignes fais un petit poeme qui dit que grace a cette simple reponse l'ordinateur a telepathiquement deviné le mot caché !")
+    return poem_response.text
 
-  # Streamlit app layout
-  st.title("Magic Mind Reader with Gemini Vision")
-  st.write("Ask a question about the image, and I'll use my magic powers (powered by Gemini) to guess your thoughts based on a detail I see!")
+# Streamlit app layout
+st.title('Animal Poem Generator')
 
-  uploaded_file = st.file_uploader("Upload an Image")
+# User input
+animal_name = st.text_input("Enter the name of an animal:")
 
-  if uploaded_file is not None:
-      image = st.image(uploaded_file, width=400)  # Adjust width as needed
-      question = st.text_input("What's on your mind?")
-
-      if question and st.button("Reveal My Thoughts"):
-          analyze_and_respond(image, question)
+if st.button('Generate Poem'):
+    if animal_name:
+        poem = ask_animal_poem(animal_name)
+        st.markdown(f"### Generated Poem:\n{poem}", unsafe_allow_html=True)
+    else:
+        st.write("Please enter the name of an animal to generate a poem.")
