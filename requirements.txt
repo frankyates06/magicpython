@@ -1,2 +1,5 @@
 streamlit_webrtc
 genai
+ibm-generative-ai
+streamlit
+google-generativeai
