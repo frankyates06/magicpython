@@ -3,7 +3,7 @@ import os
 import google.generativeai as genai
 
 # Set your API key
-GOOGLE_API_KEY = os.getenv("GAPI")
+GOOGLE_API_KEY = st.secrets["G2API"]
 
 # Configure the SDK with your API key
 genai.configure(api_key=GOOGLE_API_KEY)
